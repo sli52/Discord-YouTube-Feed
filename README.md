@@ -8,8 +8,8 @@ Note, you must create a webhook to use this bot https://support.discord.com/hc/e
 
 The following variables must be edited:
 
-`discord_webhook_url = ` - Append a webhook URL. 
-`webhook_username = ` - append a nickname (can be anything) for the webhook)
+`discord_webhook_url = ` - Append a webhook URL.   
+`webhook_username = ` - append a nickname (can be anything) for the webhook)  
 `webhook_avatar = ` - append URL for an avatar. Any picture should work. I host mine on [Imgur](https://imgur.com/upload) but this isn't required.
 
 Add channel ID's you wish to follow to the `channel_ids` dictionary.

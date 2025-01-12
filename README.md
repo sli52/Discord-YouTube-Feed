@@ -1,2 +1,3 @@
 # Discord-YouTube-Feed
-A Discord webhook bot that'll automatically post new YouTube uploads to a Discord channel
+
+A simple Discord webhook bot (using discord.py fork, Disnake) that scrapes YouTube channels for new uploads and then posts them to a selected webhook channel.

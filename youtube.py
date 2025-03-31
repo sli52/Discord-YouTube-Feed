@@ -1,9 +1,10 @@
-from disnake import Webhook  # I do not use discord.py, but the fundamentals are probably the same
+from disnake import Webhook
 import aiohttp
 import asyncio
 from bs4 import BeautifulSoup
 import aiosqlite
-## note: when using poetry, need to use `poetry shell` in order to access lxml
+from fake_useragent import UserAgent
+## note: need to use `poetry shell` in order to access lxml
 
 channel_ids = {'Taylor Swift': 'UCqECaJ8Gagnn7YCbPEzWH6g', 'RecordingAcademy': 'UCq4isO8ZYOZfmvGJ-_1UdIA'}  
 # name of channel is not actually used in the script
@@ -12,6 +13,8 @@ channel_ids = {'Taylor Swift': 'UCqECaJ8Gagnn7YCbPEzWH6g', 'RecordingAcademy': '
 # otherwise go to YouTube channel page, e.g https://www.youtube.com/@RecordingAcademy
 # at the top you can see the channel description > click more > scroll down and click 'share channel' > click 'copy channel id'
 
+# set list of user agents to use
+ua = UserAgent(platforms='desktop')
 
 async def create_webhook(title, link, youtube_name, date):
     async with aiohttp.ClientSession() as session:
@@ -20,10 +23,11 @@ async def create_webhook(title, link, youtube_name, date):
         webhook = Webhook.from_url(discord_webhook_url, session=session)
 
         # https://docs.disnake.dev/en/latest/api/webhooks.html#disnake.Webhook.send
+        # username = name of webhook user
         ## await send(content=..., *, username=..., avatar_url=..., tts=False, ephemeral=..., suppress_embeds=..., flags=..., file=..., files=..., embed=..., embeds=..., allowed_mentions=..., view=..., components=..., thread=..., thread_name=..., applied_tags=..., wait=False, delete_after=..., poll=...)
 
-        webhook_username = # enter name of the Webhook user, can be anything
-        webhook_avatar = # enter a url to a pic if you want a avatar
+        webhook_username = YouTube Bot # enter name of the Webhook user, can be anything (in this case, it's YouTube Bot)
+        webhook_avatar = "https://i.imgur.com/22Q9QyJ.png" # enter a url to a pic if you want a avatar
         await webhook.send(content=f"NEW UPLOAD FROM {youtube_name}!\n'{title}'\n{link}\n{date}", username=webhook_username, avatar_url=webhook_avatar)
         await asyncio.sleep(3)
 
@@ -45,9 +49,9 @@ async def channel_monitor():
         for chan_id in channel_ids:
             async with aiohttp.ClientSession() as session:
                 HEADERS = {
-                    'User-Agent': 'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19'
+                    'User-Agent': ua.random
                 }
-                await asyncio.sleep(18)  # to avoid annoying YouTube and violating ratelimits
+                await asyncio.sleep(18)
                 async with session.get(f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_ids[chan_id]}", headers=HEADERS) as r:
                     soup = BeautifulSoup(await r.text(), "lxml")  # grabs the entire html response
 
@@ -95,7 +99,6 @@ async def channel_monitor():
                                 post_vids = await create_webhook(title, link, youtube_name, date)
                             else:
                                 # make sure old videos are added to db anyway
-                                # this isn't really needed for anything important
                                 print(f"Adding old videos to DB: {title} - {date}")
                                 cursor_old = await db.execute("""
                                     INSERT INTO videos VALUES

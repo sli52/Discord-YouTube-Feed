@@ -19,7 +19,7 @@ ua = UserAgent(platforms='desktop')
 async def create_webhook(title, link, youtube_name, date):
     async with aiohttp.ClientSession() as session:
         # url is the discord webhook url, this allows us to post
-        discord_webhook_url = https://discord.com/api/webhooks/1403156254247092224/DNVVQGexd3XdvooHAHrtNmJqR-SjPOiK4e2FSgHoa4pe4aI7xnd7fVQkhksh3FG7IuOx
+        discord_webhook_url = "https://discord.com/api/webhooks/1403156254247092224/DNVVQGexd3XdvooHAHrtNmJqR-SjPOiK4e2FSgHoa4pe4aI7xnd7fVQkhksh3FG7IuOx"
         webhook = Webhook.from_url(discord_webhook_url, session=session)
 
         # https://docs.disnake.dev/en/latest/api/webhooks.html#disnake.Webhook.send
